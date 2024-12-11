@@ -2225,8 +2225,6 @@ public class TelephonyManager {
     @SuppressAutoDoc // No support for device / profile owner or carrier privileges (b/72967236).
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     public String getDeviceId() {
-	return "111111111111111";
-	/*
         try {
             ITelephony telephony = getITelephony();
             if (telephony == null)
@@ -2237,7 +2235,7 @@ public class TelephonyManager {
             return null;
         } catch (NullPointerException ex) {
             return null;
-        }*/
+        }
     }
 
     /**
@@ -2280,8 +2278,7 @@ public class TelephonyManager {
     @SuppressAutoDoc // No support for device / profile owner or carrier privileges (b/72967236).
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     public String getDeviceId(int slotIndex) {
-	return "111111111111111";
-        /*
+        // FIXME this assumes phoneId == slotIndex
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
             if (info == null)
@@ -2292,7 +2289,7 @@ public class TelephonyManager {
             return null;
         } catch (NullPointerException ex) {
             return null;
-        }*/
+        }
     }
 
     /**
