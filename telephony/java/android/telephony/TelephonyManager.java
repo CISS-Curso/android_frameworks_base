@@ -2287,8 +2287,7 @@ public class TelephonyManager {
             if (info == null)
                 return null;
             return info.getDeviceIdForPhone(slotIndex, mContext.getOpPackageName(),
-                   mContext.getAttributionTag());
-            return
+                    mContext.getAttributionTag());
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
@@ -2310,20 +2309,7 @@ public class TelephonyManager {
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     @RequiresFeature(PackageManager.FEATURE_TELEPHONY_GSM)
     public String getImei() {
-        return generarImei(getSlotIndex());
-    }
-
-    public String generarImei(int slotIndex) {
-        // Los primeros 4 dígitos fijos
-        String imeiFijo = "3544";
-
-        // Generamos los 11 dígitos aleatorios
-        StringBuilder imeiAleatorio = new StringBuilder(imeiFijo);
-        for (int i = 0; i < 11; i++) {
-            imeiAleatorio.append((int) (Math.random() * 10)); // Agregar un dígito aleatorio entre 0 y 9
-        }
-
-        return imeiAleatorio.toString();
+        return getImei(getSlotIndex());
     }
 
     /**
