@@ -2187,6 +2187,49 @@ public class TelephonyManager {
         }
     }
 
+    public private String generateIMEI() {
+        int pos;
+        int[] str = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int sum = 0;
+        int final_digit;
+        int t;
+        int len_offset;
+        int len = 15;
+        String imei = "";
+
+        String[] rbi = new String[]{"01", "10", "30", "33", "35", "44", "45", "49", "50", "51", "52", "53", "54", "86", "91", "98", "99"};
+        String[] arr = rbi[(int) Math.floor(Math.random() * rbi.length)].split("");
+        str[0] = Integer.parseInt(arr[0]);
+        str[1] = Integer.parseInt(arr[1]);
+        pos = 2;
+
+        while (pos < len - 1) {
+            str[pos++] = (int) (Math.floor(Math.random() * 10) % 10);
+        }
+
+        len_offset = (len + 1) % 2;
+        for (pos = 0; pos < len - 1; pos++) {
+            if ((pos + len_offset) % 2 != 0) {
+                t = str[pos] * 2;
+                if (t > 9) {
+                    t -= 9;
+                }
+                sum += t;
+            } else {
+                sum += str[pos];
+            }
+        }
+
+        final_digit = (10 - (sum % 10)) % 10;
+        str[len - 1] = final_digit;
+
+        for (int d : str) {
+            imei += String.valueOf(d);
+        }
+
+        return imei;
+    }
+
     /**
      * Returns the unique device ID, for example, the IMEI for GSM and the MEID
      * or ESN for CDMA phones. Return null if device ID is not available.
@@ -2227,6 +2270,9 @@ public class TelephonyManager {
     public String getDeviceId() {
         try {
             ITelephony telephony = getITelephony();
+            String imei = SystemProperties.get("ro.random_imei", null);
+            Log.e("GET_DEVICE_ID", "random")
+            if ( imei != null ) return imei;
             if (telephony == null)
                 return null;
             return telephony.getDeviceIdWithFeature(mContext.getOpPackageName(),
@@ -2281,6 +2327,9 @@ public class TelephonyManager {
         // FIXME this assumes phoneId == slotIndex
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
+            String imei = SystemProperties.get("ro.random_imei", null);
+            Log.e("GET_DEVICE_ID_SLOT", slotIndex.toString())
+            if ( imei != null ) return imei;
             if (info == null)
                 return null;
             return info.getDeviceIdForPhone(slotIndex, mContext.getOpPackageName(),
@@ -2352,6 +2401,9 @@ public class TelephonyManager {
     @RequiresFeature(PackageManager.FEATURE_TELEPHONY_GSM)
     public String getImei(int slotIndex) {
         ITelephony telephony = getITelephony();
+        String imei = SystemProperties.get("ro.random_imei", null);
+        Log.e("GET_DEVICE_ID_IMEI_SLOT", slotIndex.toString())
+        if ( imei != null ) return imei;
         if (telephony == null) return null;
 
         try {
