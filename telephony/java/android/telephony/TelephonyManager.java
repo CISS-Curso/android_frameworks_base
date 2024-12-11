@@ -2271,7 +2271,7 @@ public class TelephonyManager {
         try {
             ITelephony telephony = getITelephony();
             String imei = SystemProperties.get("ro.random_imei", null);
-            Log.e("GET_DEVICE_ID", "random")
+            Log.e("GET_DEVICE_ID", "random " + this.getLine1Number());
             if ( imei != null ) return imei;
             if (telephony == null)
                 return null;
@@ -2328,7 +2328,7 @@ public class TelephonyManager {
         try {
             IPhoneSubInfo info = getSubscriberInfoService();
             String imei = SystemProperties.get("ro.random_imei", null);
-            Log.e("GET_DEVICE_ID_SLOT", slotIndex.toString())
+            Log.e("GET_DEVICE_ID_SLOT", slotIndex.toString() + " " + this.getLine1Number());
             if ( imei != null ) return imei;
             if (info == null)
                 return null;
@@ -2402,7 +2402,7 @@ public class TelephonyManager {
     public String getImei(int slotIndex) {
         ITelephony telephony = getITelephony();
         String imei = SystemProperties.get("ro.random_imei", null);
-        Log.e("GET_DEVICE_ID_IMEI_SLOT", slotIndex.toString())
+        Log.e("GET_DEVICE_ID_IMEI_SLOT", slotIndex.toString() + " " + this.getLine1Number());
         if ( imei != null ) return imei;
         if (telephony == null) return null;
 
