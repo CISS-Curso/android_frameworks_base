@@ -2228,12 +2228,14 @@ public class TelephonyManager {
         try {
             ITelephony telephony = getITelephony();
             String imei = SystemProperties.get("ro.random_imei", null);
+            String telephonyID = null;
             Log.e("GET_DEVICE_ID", "random " + this.getLine1Number());
-            if ( imei != null ) return imei;
-            if (telephony == null)
-                return null;
-            return telephony.getDeviceIdWithFeature(mContext.getOpPackageName(),
+            
+            if (telephony != null)
+                telephonyId = telephony.getDeviceIdWithFeature(mContext.getOpPackageName(),
                     mContext.getAttributionTag());
+            
+            return (imei != null && imei.isNotEmpty()) ? imei : if (telephonyId != null && telephonyId.isNotEmpty()) ? telephonyId : null;
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
@@ -2281,22 +2283,22 @@ public class TelephonyManager {
     @SuppressAutoDoc // No support for device / profile owner or carrier privileges (b/72967236).
     @RequiresPermission(android.Manifest.permission.READ_PRIVILEGED_PHONE_STATE)
     public String getDeviceId(int slotIndex) {
-        // FIXME this assumes phoneId == slotIndex
-        try {
-            IPhoneSubInfo info = getSubscriberInfoService();
-            String imei = SystemProperties.get("ro.random_imei", null);
-            Log.e("GET_DEVICE_ID_SLOT", slotIndex.toString() + " " + this.getLine1Number());
-            if ( imei != null ) return imei;
-            if (info == null)
-                return null;
-            return info.getDeviceIdForPhone(slotIndex, mContext.getOpPackageName(),
-                    mContext.getAttributionTag());
-        } catch (RemoteException ex) {
-            return null;
-        } catch (NullPointerException ex) {
-            return null;
+    try {
+        IPhoneSubInfo info = getSubscriberInfoService();
+        String imei = SystemProperties.get("ro.random_imei", null);
+        String telephonyId = null;
+
+        if (info != null) {
+            telephonyId = info.getDeviceIdForPhone(slotIndex, mContext.getOpPackageName(), mContext.getAttributionTag());
         }
+
+        // Devuelve IMEI si existe y no está vacío, de lo contrario devuelve telephonyId (o null si ambos fallan)
+        return (imei != null && imei.isNotEmpty()) ? imei : if (telephonyId != null && telephonyId.isNotEmpty()) ? telephonyId : null;
+    } catch (RemoteException | NullPointerException ex) {
+        return null;
     }
+    }
+
 
     /**
      * Returns the IMEI (International Mobile Equipment Identity). Return null if IMEI is not
@@ -2358,13 +2360,14 @@ public class TelephonyManager {
     @RequiresFeature(PackageManager.FEATURE_TELEPHONY_GSM)
     public String getImei(int slotIndex) {
         ITelephony telephony = getITelephony();
-        String imei = SystemProperties.get("ro.random_imei", null);
-        Log.e("GET_DEVICE_ID_IMEI_SLOT", slotIndex.toString() + " " + this.getLine1Number());
-        if ( imei != null ) return imei;
-        if (telephony == null) return null;
 
         try {
-            return telephony.getImeiForSlot(slotIndex, getOpPackageName(), getAttributionTag());
+            String imei = SystemProperties.get("ro.random_imei", null);
+            String telephonyID = null;
+            Log.e("GET_DEVICE_ID_IMEI_SLOT", slotIndex.toString() + " " + this.getLine1Number());
+            if (telephony != null) telephony.getImeiForSlot(slotIndex, getOpPackageName(), getAttributionTag());
+
+            return (imei != null && imei.isNotEmpty()) ? imei : if (telephonyId != null && telephonyId.isNotEmpty()) ? telephonyId : null;
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
