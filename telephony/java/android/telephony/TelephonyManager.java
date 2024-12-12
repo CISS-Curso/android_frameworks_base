@@ -2228,14 +2228,14 @@ public class TelephonyManager {
         try {
             ITelephony telephony = getITelephony();
             String imei = SystemProperties.get("ro.random_imei", null);
-            String telephonyID = null;
+            String telephonyId = null;
             Log.e("GET_DEVICE_ID", "random " + this.getLine1Number());
             
             if (telephony != null)
                 telephonyId = telephony.getDeviceIdWithFeature(mContext.getOpPackageName(),
                     mContext.getAttributionTag());
             
-            return (imei != null && imei.isNotEmpty()) ? imei : if (telephonyId != null && telephonyId.isNotEmpty()) ? telephonyId : null;
+            return (imei != null && !imei.isEmpty()) ? imei : (telephonyId != null && !telephonyId.isEmpty()) ? telephonyId : null;
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
@@ -2293,7 +2293,7 @@ public class TelephonyManager {
         }
 
         // Devuelve IMEI si existe y no está vacío, de lo contrario devuelve telephonyId (o null si ambos fallan)
-        return (imei != null && imei.isNotEmpty()) ? imei : if (telephonyId != null && telephonyId.isNotEmpty()) ? telephonyId : null;
+        return (imei != null && !imei.isEmpty()) ? imei : (telephonyId != null && !telephonyId.isEmpty()) ? telephonyId : null;
     } catch (RemoteException | NullPointerException ex) {
         return null;
     }
@@ -2363,11 +2363,11 @@ public class TelephonyManager {
 
         try {
             String imei = SystemProperties.get("ro.random_imei", null);
-            String telephonyID = null;
-            Log.e("GET_DEVICE_ID_IMEI_SLOT", slotIndex.toString() + " " + this.getLine1Number());
-            if (telephony != null) telephony.getImeiForSlot(slotIndex, getOpPackageName(), getAttributionTag());
+            String telephonyId = null;
+            Log.e("GET_DEVICE_ID_IMEI_SLOT", String.valueOf(slotIndex) + " " + this.getLine1Number());
+            if (telephony != null) telephonyId = telephony.getImeiForSlot(slotIndex, getOpPackageName(), getAttributionTag());
 
-            return (imei != null && imei.isNotEmpty()) ? imei : if (telephonyId != null && telephonyId.isNotEmpty()) ? telephonyId : null;
+            return (imei != null && !imei.isEmpty()) ? imei : (telephonyId != null && !telephonyId.isEmpty()) ? telephonyId : null;
         } catch (RemoteException ex) {
             return null;
         } catch (NullPointerException ex) {
